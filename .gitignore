@@ -1,6 +1,6 @@
-# Ignorar los directorios data y results por defecto
-data/
-results/
+# Ignorar todo dentro de data y results, pero no las carpetas mismas
+data/*
+results/*
 
 # No ignorar .gitkeep dentro de ellos
 !data/**/.gitkeep
