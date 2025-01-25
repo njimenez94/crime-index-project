@@ -11,7 +11,9 @@ paths = setup_paths()
 file = os.path.join(paths['data_raw'], 'global_oc_index.xlsx')
 
 df_21 = pd.read_excel(file, sheet_name='2021_dataset')
+print("Cantidad de registros en 2021_dataset:", df_21.shape[0])
 df_23 = pd.read_excel(file, sheet_name='2023_dataset')
+print("Cantidad de registros en 2023_dataset:", df_23.shape[0])
 
 df_21.insert(3, 'year', 2021)
 df_23.insert(3, 'year', 2023)
@@ -50,16 +52,16 @@ COLUMN_MAPPING = {
     'Victim and witness support': 'victim_witness_support',
     'Prevention': 'prevention',
     'Non-state actors': 'non_state_actors',
-    'Criminality avg,': 'criminality_avg',
-    'Criminal markets avg,': 'criminal_markets_avg',
+    'Criminality avg,': 'criminality',
+    'Criminal markets avg,': 'criminal_markets',
     'Cyber-dependent crimes': 'cyber_dependent_crimes',
     'Financial crimes': 'financial_crimes',
     'Trade in counterfeit goods': 'counterfeit_goods_trade',
     'Illicit trade in excisable goods': 'illicit_trade_excisable_goods',
     'Extortion and protection racketeering': 'extortion_protection_racketeering',
-    'Criminal actors avg,': 'criminal_actors_avg',
+    'Criminal actors avg,': 'criminal_actors',
     'Private sector actors': 'private_sector_actors',
-    'Resilience avg,': 'resilience_avg',
+    'Resilience avg,': 'resilience',
     'year': 'year'
 }
 
@@ -69,6 +71,25 @@ df_23.rename(columns=COLUMN_MAPPING, inplace=True)
 
 # Concatenar los DataFrames
 df = pd.concat([df_21, df_23], axis=0)
+print("Cantidad de registros en el DataFrame concatenado:", df.shape[0])
+
+# Procesar categorias
+category_columns = ['continent', 'region', 'country', 'year']
+
+for column in category_columns:
+    stripped_column = df[column].astype(str).str.strip()
+    df[column] = pd.Categorical(
+        stripped_column, 
+        categories=sorted(stripped_column.unique()),  # Orden ascendente
+        ordered=True
+    )
+
+# Procesar columnas numericas
+numeric_columns = df.columns.difference(category_columns)
+
+for column in numeric_columns:
+    df[column] = df[column].astype(float)
 
 # Exportar datos procesados
 df.to_csv(os.path.join(paths['data_processed'], 'data_processed.csv'), index=False)
+df.to_parquet(os.path.join(paths['data_processed'], 'data_processed.parquet'), index=False)
