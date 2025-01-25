@@ -1,0 +1,7 @@
+# Ignorar los directorios data y results por defecto
+data/
+results/
+
+# No ignorar .gitkeep dentro de ellos
+!data/**/.gitkeep
+!results/**/.gitkeep
