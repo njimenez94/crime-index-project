@@ -2,6 +2,16 @@
 data/*
 results/*
 
-# No ignorar .gitkeep dentro de ellos
+# No ignorar .gitkeep dentro de cualquier subcarpeta
 !data/**/.gitkeep
 !results/**/.gitkeep
+
+# Asegurarse de que las carpetas mismas no sean ignoradas
+!data/
+!results/
+
+# Incluir las subcarpetas de results/figures y sus carpetas html e images
+!results/figures/
+!results/figures/html/
+!results/figures/images/
+!results/tables/
